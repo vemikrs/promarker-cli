@@ -74,7 +74,7 @@ async function checkNodeVersion(checks: EnvironmentCheck[]) {
 async function checkCliInstallation(checks: EnvironmentCheck[]) {
   try {
     // Try to read package.json from multiple possible locations
-    let packageJson: any
+    let packageJson: { name?: string; version?: string }
     let packagePath = ''
     
     try {
@@ -121,7 +121,7 @@ async function checkCliInstallation(checks: EnvironmentCheck[]) {
       })
     }
     
-  } catch (error) {
+  } catch {
     checks.push({
       name: 'CLI Installation',
       status: 'warn',
