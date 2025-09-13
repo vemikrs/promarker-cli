@@ -11,25 +11,31 @@ const packageJson = require('../package.json')
 program
   .name('promarker')
   .alias('pmkr')
-  .description('A modern CLI tool for project markers')
+  .description('ProMarker Stencil Validator - Official CLI for validating ProMarker stencil definitions')
   .version(packageJson.version)
 
-// Add some basic commands for demonstration
+// Validate command - primary functionality
 program
-  .command('init')
-  .description('Initialize a new promarker project')
-  .option('-f, --force', 'Force initialization even if files exist')
-  .action(async (options) => {
-    const { initCommand } = await import('./commands/init.js')
-    await initCommand(options)
+  .command('validate')
+  .argument('[path]', 'Path to stencil directory (default: current directory)', '.')
+  .description('Validate ProMarker stencil definitions in the specified directory')
+  .option('--format <format>', 'Output format (text|json)', 'text')
+  .option('--fail-on <level>', 'Exit code threshold (none|warn|error)', 'error')
+  .option('--strict', 'Enable strict validation mode')
+  .option('--ignore <patterns...>', 'Glob patterns to ignore')
+  .action(async (path, options) => {
+    const { validateCommand } = await import('./commands/validate.js')
+    const exitCode = await validateCommand(path, options)
+    process.exit(exitCode)
   })
 
+// Doctor command - environment diagnostics
 program
-  .command('info')
-  .description('Show project information')
+  .command('doctor')
+  .description('Check CLI environment and requirements')
   .action(async () => {
-    const { infoCommand } = await import('./commands/info.js')
-    await infoCommand()
+    const { doctorCommand } = await import('./commands/doctor.js')
+    await doctorCommand()
   })
 
 // Export the program for testing purposes
